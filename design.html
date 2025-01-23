@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shipping Module</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        .section {
+            margin-bottom: 20px;
+        }
+
+        .section h2 {
+            font-size: 18px;
+            color: #555;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 5px;
+            margin-bottom: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .form-group select {
+            cursor: pointer;
+        }
+
+        .form-group input[type="radio"] {
+            width: auto;
+            margin-right: 5px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 15px;
+            background: #007bff;
+            color: #fff;
+            text-align: center;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 16px;
+        }
+
+        .btn:hover {
+            background: #0056b3;
+        }
+
+        .tracking {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .tracking input {
+            width: calc(100% - 120px);
+            display: inline-block;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Shipping Module</h1>
+
+        <div class="section">
+            <h2>Shipping Type</h2>
+            <div class="form-group">
+                <label for="shipping-type">Select Shipping Type:</label>
+                <select id="shipping-type">
+                    <option value="self-shipped">Self Shipped</option>
+                    <option value="auto-shipped">Auto Shipped</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="section" id="auto-shipping-options" style="display: none;">
+            <h2>Auto Shipping Options</h2>
+            <div class="form-group">
+                <label for="service-timings">Service Timings:</label>
+                <input type="text" id="service-timings" placeholder="Enter service timings">
+            </div>
+            <div class="form-group">
+                <label>Shipping Method:</label>
+                <input type="radio" name="shipping-method" value="hyper-local" id="hyper-local">
+                <label for="hyper-local">Hyper Local</label>
+                <input type="radio" name="shipping-method" value="courier" id="courier">
+                <label for="courier">Courier</label>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Shipping Cost Calculation</h2>
+            <div class="form-group">
+                <label for="self-shipped-cost">Self Shipped (Flat Rate):</label>
+                <input type="number" id="self-shipped-cost" placeholder="Enter flat rate">
+            </div>
+            <div class="form-group">
+                <label for="api-calculation">Auto Shipped (API Based Calculation):</label>
+                <input type="text" id="api-calculation" placeholder="Enter API endpoint">
+            </div>
+        </div>
+
+        <div class="tracking">
+            <h2>Tracking</h2>
+            <div class="form-group">
+                <label for="tracking-id">Enter Tracking ID:</label>
+                <input type="text" id="tracking-id" placeholder="Enter tracking ID">
+                <button class="btn">Track</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const shippingType = document.getElementById('shipping-type');
+        const autoShippingOptions = document.getElementById('auto-shipping-options');
+
+        shippingType.addEventListener('change', () => {
+            if (shippingType.value === 'auto-shipped') {
+                autoShippingOptions.style.display = 'block';
+            } else {
+                autoShippingOptions.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
