@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shipping Options for Tenants</title>
+</head>
+<style>
+    body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f4f4f4;
+}
+
+.admin-container {
+  width: 80%;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+  text-align: center;
+}
+
+.shipping-settings {
+  margin-bottom: 20px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+table th, table td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: left;
+}
+
+button {
+  padding: 10px 20px;
+  margin-top: 20px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #45a049;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  width: 300px;
+  text-align: center;
+}
+
+input {
+  width: 100%;
+  padding: 8px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+input[type="number"] {
+  -webkit-appearance: none;
+  -moz-appearance: textfield;
+}
+
+</style>
+<body>
+  <div class="tenant-container">
+    <h1>Shipping Options for Your Store</h1>
+    <section class="shipping-options">
+      <h2>Select Shipping Method</h2>
+      <select id="shippingMethodsDropdown">
+        <!-- Options will be dynamically populated here -->
+      </select>
+      <div id="shippingCostDisplay"></div>
+    </section>
+    
+    <section class="checkout">
+      <h2>Checkout</h2>
+      <button id="checkoutBtn">Proceed to Checkout</button>
+    </section>
+  </div>
+<script>
+    // Simulated Shipping Methods
+const shippingMethods = [
+  { name: 'Flat Rate', cost: 10 },
+  { name: 'Free Shipping', cost: 0 },
+  { name: 'Weight-Based', cost: 5 }
+];
+
+const shippingDropdown = document.getElementById('shippingMethodsDropdown');
+const shippingCostDisplay = document.getElementById('shippingCostDisplay');
+
+// Populate the shipping methods dropdown
+shippingMethods.forEach(method => {
+  const option = document.createElement('option');
+  option.value = method.name;
+  option.textContent = method.name;
+  shippingDropdown.appendChild(option);
+});
+
+// Display the shipping cost when a method is selected
+shippingDropdown.addEventListener('change', function() {
+  const selectedMethod = shippingMethods.find(method => method.name === shippingDropdown.value);
+  if (selectedMethod) {
+    shippingCostDisplay.textContent = `Shipping Cost: $${selectedMethod.cost}`;
+  }
+});
+
+// Checkout button action
+document.getElementById('checkoutBtn').addEventListener('click', function() {
+  alert('Proceeding to checkout with your selected shipping method.');
+});
+
+</script>
+</body>
+</html>

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Shipping Settings</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+        }
+
+        .admin-shipping-settings {
+            width: 50%;
+            margin: 40px auto;
+            padding: 20px;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .admin-shipping-settings h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .admin-shipping-settings form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .admin-shipping-settings label {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .admin-shipping-settings input,
+        .admin-shipping-settings select {
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .admin-shipping-settings button {
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .admin-shipping-settings button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-shipping-settings">
+        <h2>Shipping Settings</h2>
+        <form id="shipping-form">
+            <div>
+                <label for="shipping-method">Shipping Method:</label>
+                <select id="shipping-method">
+                    <option value="flat_rate">Flat Rate</option>
+                    <option value="free_shipping">Free Shipping</option>
+                    <option value="weight_based">Weight-Based</option>
+                </select>
+            </div>
+            <div>
+                <label for="shipping-zone">Shipping Zone:</label>
+                <input type="text" id="shipping-zone" placeholder="Enter Zone">
+            </div>
+            <div>
+                <label for="shipping-rate">Shipping Rate:</label>
+                <input type="number" id="shipping-rate" placeholder="Enter Rate">
+            </div>
+            <button type="submit">Save Settings</button>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('shipping-form').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const method = document.getElementById('shipping-method').value;
+            const zone = document.getElementById('shipping-zone').value;
+            const rate = document.getElementById('shipping-rate').value;
+
+            // Mock backend interaction or store the data
+            console.log(`Shipping Method: ${method}, Zone: ${zone}, Rate: ${rate}`);
+
+            alert('Shipping settings saved successfully!');
+        });
+    </script>
+</body>
+</html>
