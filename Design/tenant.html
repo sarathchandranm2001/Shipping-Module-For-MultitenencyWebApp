@@ -4,138 +4,148 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Shipping Options for Tenants</title>
-</head>
-<style>
+  <style>
     body {
-  font-family: Arial, sans-serif;
-  margin: 0;
-  padding: 0;
-  background-color: #f4f4f4;
-}
-
-.admin-container {
-  width: 80%;
-  margin: 20px auto;
-  padding: 20px;
-  background-color: white;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-h1 {
-  text-align: center;
-}
-
-.shipping-settings {
-  margin-bottom: 20px;
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-table th, table td {
-  border: 1px solid #ddd;
-  padding: 10px;
-  text-align: left;
-}
-
-button {
-  padding: 10px 20px;
-  margin-top: 20px;
-  background-color: #4CAF50;
-  color: white;
-  border: none;
-  cursor: pointer;
-}
-
-button:hover {
-  background-color: #45a049;
-}
-
-.modal {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  align-items: center;
-  justify-content: center;
-}
-
-.modal-content {
-  background-color: white;
-  padding: 20px;
-  border-radius: 10px;
-  width: 300px;
-  text-align: center;
-}
-
-input {
-  width: 100%;
-  padding: 8px;
-  margin: 10px 0;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-}
-
-input[type="number"] {
-  -webkit-appearance: none;
-  -moz-appearance: textfield;
-}
-
-</style>
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+    }
+    .tenant-container {
+      max-width: 1200px;
+      margin: 50px auto;
+      background-color: white;
+      padding: 20px;
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+    .shipping-options {
+      margin-top: 30px;
+    }
+    select, button, input[type="number"] {
+      padding: 10px;
+      width: 100%;
+      margin: 10px 0;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
+    .shipping-details {
+      background-color: #f9f9f9;
+      padding: 15px;
+      border-radius: 5px;
+    }
+    .checkout {
+      text-align: center;
+    }
+  </style>
+</head>
 <body>
+
   <div class="tenant-container">
     <h1>Shipping Options for Your Store</h1>
+
     <section class="shipping-options">
       <h2>Select Shipping Method</h2>
       <select id="shippingMethodsDropdown">
-        <!-- Options will be dynamically populated here -->
-      </select>
+        </select>
       <div id="shippingCostDisplay"></div>
+      <div id="extraDetails"></div>
+      <div id="costInputContainer" style="display: none;">
+        <label for="shippingCostInput">Enter Shipping Cost:</label>
+        <input type="number" id="shippingCostInput" min="0" step="0.01">
+      </div>
     </section>
-    
+
     <section class="checkout">
       <h2>Checkout</h2>
       <button id="checkoutBtn">Proceed to Checkout</button>
     </section>
   </div>
-<script>
-    // Simulated Shipping Methods
-const shippingMethods = [
-  { name: 'Flat Rate', cost: 10 },
-  { name: 'Free Shipping', cost: 0 },
-  { name: 'Weight-Based', cost: 5 }
-];
 
-const shippingDropdown = document.getElementById('shippingMethodsDropdown');
-const shippingCostDisplay = document.getElementById('shippingCostDisplay');
+  <script>
+    // Simulated Shipping Methods (Self-shipped and Auto-shipped)
+    const shippingMethods = [
+      { name: 'Self-shipped', type: 'self-shipped', cost: null }, // Cost will be set by user
+      { name: 'Auto-shipped (Courier)', type: 'auto-shipped', apiUrl: 'https://api.shipping.com/calculate', dynamic: true },
+      { name: 'Hyper-local Delivery', type: 'auto-shipped', apiUrl: 'https://api.shipping.com/hyperlocal', dynamic: true }
+    ];
 
-// Populate the shipping methods dropdown
-shippingMethods.forEach(method => {
-  const option = document.createElement('option');
-  option.value = method.name;
-  option.textContent = method.name;
-  shippingDropdown.appendChild(option);
-});
+    const shippingDropdown = document.getElementById('shippingMethodsDropdown');
+    const shippingCostDisplay = document.getElementById('shippingCostDisplay');
+    const extraDetails = document.getElementById('extraDetails');
+    const costInputContainer = document.getElementById('costInputContainer');
+    const shippingCostInput = document.getElementById('shippingCostInput');
 
-// Display the shipping cost when a method is selected
-shippingDropdown.addEventListener('change', function() {
-  const selectedMethod = shippingMethods.find(method => method.name === shippingDropdown.value);
-  if (selectedMethod) {
-    shippingCostDisplay.textContent = `Shipping Cost: $${selectedMethod.cost}`;
-  }
-});
+    // Populate the shipping methods dropdown
+    shippingMethods.forEach(method => {
+      const option = document.createElement('option');
+      option.value = method.name;
+      option.textContent = method.name;
+      shippingDropdown.appendChild(option);
+    });
 
-// Checkout button action
-document.getElementById('checkoutBtn').addEventListener('click', function() {
-  alert('Proceeding to checkout with your selected shipping method.');
-});
+    // Display the cost input field for self-shipped methods
+    shippingDropdown.addEventListener('change', function() {
+      const selectedMethod = shippingMethods.find(method => method.name === shippingDropdown.value);
+      if (selectedMethod) {
+        costInputContainer.style.display = selectedMethod.type === 'self-shipped' ? 'block' : 'none';
+        shippingCostInput.value = selectedMethod.cost || ''; // Set input value to existing cost (if any)
+        updateCostDisplay(selectedMethod);
+      }
+    });
 
-</script>
+    // Update cost display based on selection and input value
+    function updateCostDisplay(selectedMethod) {
+      if (selectedMethod.type === 'self-shipped') {
+        const cost = parseFloat(shippingCostInput.value);
+        if (!isNaN(cost) && cost >= 0) {
+          shippingCostDisplay.textContent = `Shipping Cost: $${cost.toFixed(2)}`;
+          extraDetails.textContent = '';
+          selectedMethod.cost = cost; // Update cost in the method object
+        } else {
+          shippingCostDisplay.textContent = 'Please enter a valid cost.';
+          extraDetails.textContent = '';
+        }
+      } else if (selectedMethod.type === 'auto-shipped' && selectedMethod.dynamic) {
+        simulateApiCall(selectedMethod.apiUrl);
+      }
+    }
+
+    // Simulate an API call to get shipping cost and other details
+    function simulateApiCall(url) {
+      // Simulate dynamic cost calculation and additional details
+      if (url.includes('hyperlocal')) {
+        shippingCostDisplay.textContent = 'Shipping Cost: $8 (Hyper-local delivery)';
+        extraDetails.innerHTML = `
+          <p>Service Timings: 9 AM - 6 PM</p>
+          <p>Courier: Local courier service</p>
+          <p>Delivery Time: 1-2 hours</p>
+        `;
+      } else if (url.includes('calculate')) {
+        shippingCostDisplay.textContent = 'Shipping Cost: $15 (Courier service)';
+        extraDetails.innerHTML = `
+          <p>Service Timings: 9 AM - 5 PM</p>
+          <p>Courier: UPS</p>
+          <p>Delivery Time: 3-5 business days</p>
+        `;
+      }
+    }
+
+    // Checkout button action
+    document.getElementById('checkoutBtn').addEventListener('click', function() {
+      const selectedMethod = shippingMethods.find(method => method.name === shippingDropdown.value);
+      if (selectedMethod) {
+        if (selectedMethod.type === 'self-shipped' && !selectedMethod.cost) {
+          alert('Please enter a shipping cost for the selected method.');
+        } else {
+          alert('Proceeding to checkout with your selected shipping method.');
+        }
+      }
+    });
+  </script>
+
 </body>
 </html>

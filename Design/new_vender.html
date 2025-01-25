@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shipping Management</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Shipping Management</h1>
+    </header>
+
+    <main>
+        <!-- Vendor Panel Section -->
+        <section id="vendor-panel">
+            <h2>Vendor Panel</h2>
+            <form id="service-area-form">
+                <h3>Service Area Configuration</h3>
+
+                <label for="country">Country:</label>
+                <input type="text" id="country" name="country" placeholder="Enter country">
+
+                <label for="state">State:</label>
+                <input type="text" id="state" name="state" placeholder="Enter state">
+
+                <label for="city">City:</label>
+                <input type="text" id="city" name="city" placeholder="Enter city">
+
+                <label for="pincode">Pincode:</label>
+                <input type="text" id="pincode" name="pincode" placeholder="Enter pincode">
+
+                <button type="button" onclick="addServiceArea()">Add Service Area</button>
+            </form>
+
+            <div id="service-areas">
+                <h3>Defined Service Areas</h3>
+                <ul id="service-area-list">
+                    <!-- Dynamically added service areas will appear here -->
+                </ul>
+            </div>
+        </section>
+
+        <!-- Shipping Method Section -->
+        <section id="shipping-methods">
+            <h2>Shipping Methods</h2>
+            <form id="shipping-method-form">
+                <h3>Configure Shipping Methods</h3>
+
+                <label for="method-name">Method Name:</label>
+                <input type="text" id="method-name" name="method-name" placeholder="Enter method name">
+
+                <label for="provider">Shipping Provider:</label>
+                <input type="text" id="provider" name="provider" placeholder="Enter provider name">
+
+                <label for="type">Type:</label>
+                <select id="type" name="type">
+                    <option value="self">Self Shipping</option>
+                    <option value="automatic">Automatic Shipping</option>
+                </select>
+
+                <button type="button" onclick="addShippingMethod()">Add Shipping Method</button>
+            </form>
+
+            <div id="methods">
+                <h3>Configured Shipping Methods</h3>
+                <ul id="method-list">
+                    <!-- Dynamically added shipping methods will appear here -->
+                </ul>
+            </div>
+        </section>
+
+        <!-- Checkout Section -->
+        <section id="checkout">
+            <h2>Checkout</h2>
+            <form id="checkout-form">
+                <h3>User Location</h3>
+
+                <label for="user-country">Country:</label>
+                <input type="text" id="user-country" name="user-country" placeholder="Enter country">
+
+                <label for="user-state">State:</label>
+                <input type="text" id="user-state" name="user-state" placeholder="Enter state">
+
+                <label for="user-city">City:</label>
+                <input type="text" id="user-city" name="user-city" placeholder="Enter city">
+
+                <label for="user-pincode">Pincode:</label>
+                <input type="text" id="user-pincode" name="user-pincode" placeholder="Enter pincode">
+
+                <button type="button" onclick="calculateShippingOptions()">Calculate Shipping Options</button>
+            </form>
+
+            <div id="shipping-options">
+                <h3>Available Shipping Options</h3>
+                <ul id="options-list">
+                    <!-- Dynamically calculated shipping options will appear here -->
+                </ul>
+            </div>
+        </section>
+    </main>
+
+    <script src="scripts.js"></script>
+</body>
+</html>

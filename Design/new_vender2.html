@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Advanced Shipping Configuration</title>
+    <style>
+        .shipping-container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        .shipping-option {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #eee;
+        }
+        .shipping-details {
+            font-size: 0.9em;
+            color: #666;
+        }
+        .shipping-provider {
+            font-weight: bold;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="shipping-container">
+        <h2>Shipping Options</h2>
+        <div id="shippingOptions">
+            <!-- Dynamically populated shipping options -->
+        </div>
+        <div class="shipping-location">
+            <h3>Enter Delivery Location</h3>
+            <form id="locationForm">
+                <input type="text" id="country" placeholder="Country" required>
+                <input type="text" id="state" placeholder="State" required>
+                <input type="text" id="city" placeholder="City" required>
+                <input type="text" id="pincode" placeholder="Pincode" required>
+                <button type="submit">Check Shipping</button>
+            </form>
+        </div>
+    </div>
+
+    <script type="module">
+        import { ShippingManager, ShippingOptionSelector } from './shipping-config.js';
+
+        const shippingManager = new ShippingManager();
+        const shippingSelector = new ShippingOptionSelector(shippingManager);
+
+        document.getElementById('locationForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const location = {
+                country: document.getElementById('country').value,
+                state: document.getElementById('state').value,
+                city: document.getElementById('city').value,
+                pincode: document.getElementById('pincode').value
+            };
+
+            const shippingOptionsContainer = document.getElementById('shippingOptions');
+            shippingOptionsContainer.innerHTML = ''; // Clear previous options
+
+            const shippingMethod = shippingManager.determineShippingMethod(location);
+            
+            const optionElement = document.createElement('div');
+            optionElement.classList.add('shipping-option');
+            optionElement.innerHTML = `
+                <div>
+                    <span class="shipping-provider">${shippingMethod.provider}</span>
+                    <div class="shipping-details">
+                        Method: ${shippingMethod.method}
+                        Delivery: ${shippingMethod.deliveryType}
+                    </div>
+                </div>
+            `;
+
+            shippingOptionsContainer.appendChild(optionElement);
+        });
+        // Shipping Configuration and Service Area Management
+class ShippingManager {
+    constructor() {
+        this.serviceAreas = {
+            countries: ['India'],
+            states: [
+                'Maharashtra', 'Delhi', 'Karnataka', 'Maharashtra', 
+                'Tamil Nadu', 'Telangana', 'Gujarat', 'West Bengal'
+            ],
+            cities: [
+                'Mumbai', 'Delhi', 'Bengaluru', 'Pune', 
+                'Chennai', 'Hyderabad', 'Ahmedabad', 'Kolkata'
+            ],
+            serviceCities: {
+                hyperLocal: [
+                    'Mumbai', 'Delhi', 'Bengaluru', 'Pune', 
+                    'Chennai', 'Hyderabad', 'Ahmedabad', 'Kolkata'
+                ]
+            }
+        };
+
+        this.shippingProviders = {
+            courier: ['Shiprocket'],
+            hyperLocal: ['Borzo']
+        };
+
+        this.shippingTimings = {
+            cutoffTime: '18:00', // 6 PM
+            sameDayDelivery: {
+                cutoffTime: '14:00', // 2 PM
+                cities: this.serviceAreas.serviceCities.hyperLocal
+            }
+        };
+    }
+
+    // Validate service area for shipping
+    validateServiceArea(location) {
+        const { country, state, city, pincode } = location;
+        
+        return {
+            isValidCountry: this.serviceAreas.countries.includes(country),
+            isValidState: this.serviceAreas.states.includes(state),
+            isValidCity: this.serviceAreas.cities.includes(city),
+            isHyperLocalDelivery: this.serviceAreas.serviceCities.hyperLocal.includes(city)
+        };
+    }
+
+    // Determine shipping method based on location
+    determineShippingMethod(location) {
+        const serviceValidation = this.validateServiceArea(location);
+        
+        if (!serviceValidation.isValidCountry) {
+            return { 
+                method: 'Not Supported', 
+                provider: null 
+            };
+        }
+
+        if (serviceValidation.isHyperLocalDelivery) {
+            return {
+                method: 'Hyper Local',
+                provider: 'Borzo',
+                deliveryType: this.canDoSameDayDelivery(location) ? 'Same Day' : 'Next Day'
+            };
+        }
+
+        return {
+            method: 'Courier',
+            provider: 'Shiprocket',
+            deliveryType: 'Standard'
+        };
+    }
+
+    // Check if same-day delivery is possible
+    canDoSameDayDelivery(location) {
+        const currentTime = new Date();
+        const cutoffTime = new Date();
+        const [hours, minutes] = this.shippingTimings.sameDayDelivery.cutoffTime.split(':');
+        
+        cutoffTime.setHours(parseInt(hours), parseInt(minutes), 0, 0);
+        
+        return currentTime < cutoffTime && 
+               this.shippingTimings.sameDayDelivery.cities.includes(location.city);
+    }
+}
+
+// Shipping Option Selection
+class ShippingOptionSelector {
+    constructor(shippingManager) {
+        this.shippingManager = shippingManager;
+        this.selectedShippingOption = null;
+    }
+
+    // Select shipping option at product level
+    selectProductShippingOption(product, location) {
+        const shippingMethod = this.shippingManager.determineShippingMethod(location);
+        
+        this.selectedShippingOption = {
+            productId: product.id,
+            ...shippingMethod
+        };
+
+        return this.selectedShippingOption;
+    }
+
+    // Generate tracking details
+    generateTrackingDetails(provider) {
+        const trackingId = `${provider}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+        return trackingId;
+    }
+}
+
+// Export for use in other modules
+export { ShippingManager, ShippingOptionSelector };
+    </script>
+</body>
+</html>
